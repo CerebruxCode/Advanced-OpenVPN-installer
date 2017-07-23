@@ -1,21 +1,21 @@
 #!/bin/bash
 
 # Secure OpenVPN server installer for Debian, Ubuntu, CentOS and Arch Linux
-# https://github.com/Angristan/OpenVPN-install
+# Πηγή: https://github.com/Angristan/OpenVPN-install
 
 
 if [[ "$EUID" -ne 0 ]]; then
-	echo "Sorry, you need to run this as root"
+	echo "Συγνώμη, θα πρέπει να το τρέξεις ως root ή με sudo"
 	exit 1
 fi
 
 if [[ ! -e /dev/net/tun ]]; then
-	echo "TUN is not available"
+	echo "Η συσκευή TUN δεν είναι διαθέσιμη. Επικοινώνησε με τον πάροχo σου."
 	exit 2
 fi
 
 if grep -qs "CentOS release 5" "/etc/redhat-release"; then
-	echo "CentOS 5 is too old and not supported"
+	echo "To CentOS 5 δεν υποστηρίζεται"
 	exit 3
 fi
 
@@ -26,12 +26,12 @@ if [[ -e /etc/debian_version ]]; then
 	RCLOCAL='/etc/rc.local'
 	SYSCTL='/etc/sysctl.conf'
 	if [[ "$VERSION_ID" != 'VERSION_ID="7"' ]] && [[ "$VERSION_ID" != 'VERSION_ID="8"' ]] && [[ "$VERSION_ID" != 'VERSION_ID="9"' ]] && [[ "$VERSION_ID" != 'VERSION_ID="12.04"' ]] && [[ "$VERSION_ID" != 'VERSION_ID="14.04"' ]] && [[ "$VERSION_ID" != 'VERSION_ID="16.04"' ]] && [[ "$VERSION_ID" != 'VERSION_ID="16.10"' ]] && [[ "$VERSION_ID" != 'VERSION_ID="17.04"' ]]; then
-		echo "Your version of Debian/Ubuntu is not supported."
-		echo "I can't install a recent version of OpenVPN on your system."
+		echo "Η έδοση του Debian/Ubuntu που έχεις δεν υποστηρίζεται."
+		echo "Δεν μπορώ να εγκαταστήσω την τελευταία έκδοση του OpenVPN στον server σου."
 		echo ""
-		echo "However, if you're using Debian unstable/testing, or Ubuntu beta,"
-		echo "then you can continue, a recent version of OpenVPN is available on these."
-		echo "Keep in mind they are not supported, though."
+		echo "Παρόλα αυτά, αν χρησιμοποιείς Debian unstable/testing, ή Ubuntu beta,"
+		echo "τότε μπορείς να συνεχίσεις αφού η τελευταία έκδοση του OpenVPN είναι διαθέσιμη για αυτές τις εκδόσεις."
+		echo "Χωρίς όμως να παρέχεται υποστήριξη."
 		while [[ $CONTINUE != "y" && $CONTINUE != "n" ]]; do
 			read -p "Continue ? [y/n]: " -e CONTINUE
 		done
@@ -51,7 +51,7 @@ elif [[ -e /etc/arch-release ]]; then
 	RCLOCAL='/etc/rc.local'
 	SYSCTL='/etc/sysctl.d/openvpn.conf'
 else
-	echo "Looks like you aren't running this installer on a Debian, Ubuntu, CentOS or ArchLinux system"
+	echo "Φαίνεται ότι εκτελείς τον εγκαταστάτη σε κάποιο σύστημα που δεν είναι Debian, Ubuntu, CentOS ή ArchLinux"
 	exit 4
 fi
 
@@ -95,39 +95,39 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 	while :
 	do
 	clear
-		echo "OpenVPN-install (github.com/Angristan/OpenVPN-install)"
+		echo "OpenVPN-install (github.com/CerebruxCode/OpenVPN-install)"
 		echo ""
-		echo "Looks like OpenVPN is already installed"
+		echo "Φαίνεται ότι το OpenVPN είναι ήδη εγκατεστημένο"
 		echo ""
-		echo "What do you want to do?"
-		echo "   1) Add a cert for a new user"
-		echo "   2) Revoke existing user cert"
-		echo "   3) Remove OpenVPN"
-		echo "   4) Exit"
+		echo "Τι θα ήθελες να κάνεις"
+		echo "   1) Προσθήκη νέου πιστοποιητικού για νέο χρήστη/συσκευή"
+		echo "   2) Ανάκληση πιστοποιητικού υπάρχοντος χρήστη/συσκευής"
+		echo "   3) Απεγκατάσταση του OpenVPN"
+		echo "   4) Έξοδος από την εφαρμογή"
 		read -p "Select an option [1-4]: " option
 		case $option in
 			1)
 			echo ""
-			echo "Tell me a name for the client cert"
-			echo "Please, use one word only, no special characters"
+			echo "Δώσε ένα όνομα για τον χρήστη/συσκευή"
+			echo "Παρακαλώ χρησιμοποίησε ΜΟΝΟ λατινικούς αλφαριθμητικούς χαρακτήρες"
 			read -p "Client name: " -e -i client CLIENT
 			cd /etc/openvpn/easy-rsa/
 			./easyrsa build-client-full $CLIENT nopass
 			# Generates the custom client.ovpn
 			newclient "$CLIENT"
 			echo ""
-			echo "Client $CLIENT added, certs available at $homeDir/$CLIENT.ovpn"
+			echo "Ο χρήστης/συσκευή $CLIENT προστέθηκε, Τα πιστοποιητικά είναι διαθέσιμα στο $homeDir/$CLIENT.ovpn"
 			exit
 			;;
 			2)
 			NUMBEROFCLIENTS=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep -c "^V")
 			if [[ "$NUMBEROFCLIENTS" = '0' ]]; then
 				echo ""
-				echo "You have no existing clients!"
+				echo "Δεν έχεις διαθέσιμους χρήστες η συσκευές!"
 				exit 5
 			fi
 			echo ""
-			echo "Select the existing client certificate you want to revoke"
+			echo "Επιλέξτε χρήστη/συσκευή του οποίου θέλετε να ανακαλέσετε το πιστοποιητικό"
 			tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep "^V" | cut -d '=' -f 2 | nl -s ') '
 			if [[ "$NUMBEROFCLIENTS" = '1' ]]; then
 				read -p "Select one client [1]: " CLIENTNUMBER
@@ -145,13 +145,13 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 			cp /etc/openvpn/easy-rsa/pki/crl.pem /etc/openvpn/crl.pem
 			chmod 644 /etc/openvpn/crl.pem
 			echo ""
-			echo "Certificate for client $CLIENT revoked"
-			echo "Exiting..."
+			echo "Το πιστοποιητικό για τον χρήστη/συσκευή $CLIENT ανακλήθηκε"
+			echo "Έξοδος..."
 			exit
 			;;
 			3)
 			echo ""
-			read -p "Do you really want to remove OpenVPN? [y/n]: " -e -i n REMOVE
+			read -p "Σίγουρα θέλεις να απεγκαταστήσεις το OpenVPN? [y/n]: " -e -i n REMOVE
 			if [[ "$REMOVE" = 'y' ]]; then
 				PORT=$(grep '^port ' /etc/openvpn/server.conf | cut -d " " -f 2)
 				if pgrep firewalld; then
@@ -184,10 +184,10 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 				rm -rf /etc/openvpn
 				rm -rf /usr/share/doc/openvpn*
 				echo ""
-				echo "OpenVPN removed!"
+				echo "Το OpenVPN απεγκαταστάθηκε!"
 			else
 				echo ""
-				echo "Removal aborted!"
+				echo "Η απεγκατάσταση ακυρώθηκε!"
 			fi
 			exit
 			;;
@@ -196,22 +196,22 @@ if [[ -e /etc/openvpn/server.conf ]]; then
 	done
 else
 	clear
-	echo "Welcome to the secure OpenVPN installer (github.com/Angristan/OpenVPN-install)"
+	echo "Καλωσορίσατε στον εγκαταστάτη του OpenVPN (github.com/CerebruxCode/OpenVPN-install)"
 	echo ""
 	# OpenVPN setup and first user creation
-	echo "I need to ask you a few questions before starting the setup"
-	echo "You can leave the default options and just press enter if you are ok with them"
+	echo "Θα χρειαστεί να σου κάνω μερικές ερωτήσεις πριν ξεκινήσω την εγκατάσταση"
+	echo "Αν δεν είσαι σίγουρος/η μπορείς απλά να πατάς Enter και θα χρησιμοποιήσω τις προεπιλογές"
 	echo ""
-	echo "I need to know the IPv4 address of the network interface you want OpenVPN listening to."
-	echo "If your server is running behind a NAT, (e.g. LowEndSpirit, Scaleway) leave the IP address as it is. (local/private IP)"
-	echo "Otherwise, it should be your public IPv4 address."
+	echo "Πρέπει να μάθω την διεύθυνση IPv4 της συσκευής δικτύου με το οποίο θα συνδέεσαι στο OpenVPN."
+	echo "Αν ο server σου τρέχει πίσω από NAT, μπορείς να αφήσεις διεύθυνση IP ως έχει. (τοπικό/ιδιωτικό IP)"
+	echo "Διαφορετικά, θα πρέπει να είναι η δημόσια διεύθυνση IPv4."
 	read -p "IP address: " -e -i $IP IP
 	echo ""
-	echo "What port do you want for OpenVPN?"
+	echo "Σε ποιο port θέλεις να συνδέεται το OpenVPN?"
 	read -p "Port: " -e -i 1194 PORT
 	echo ""
-	echo "What protocol do you want for OpenVPN?"
-	echo "Unless UDP is blocked, you should not use TCP (unnecessarily slower)"
+	echo "Ποιο πρωτόκολλο να χρησιμοποιηθεί για το OpenVPN?"
+	echo "Εκτός και αν το UDP είναι σε φραγή, δεν θα πρέπει να χρησιμοποιείς TCP (είναι πιο αργό)"
 	while [[ $PROTOCOL != "UDP" && $PROTOCOL != "TCP" ]]; do
 		read -p "Protocol [UDP/TCP]: " -e -i UDP PROTOCOL
 	done
