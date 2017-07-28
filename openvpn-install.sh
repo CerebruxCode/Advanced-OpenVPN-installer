@@ -216,28 +216,28 @@ else
 		read -p "Protocol [UDP/TCP]: " -e -i UDP PROTOCOL
 	done
 	echo ""
-	echo "What DNS do you want to use with the VPN?"
-	echo "   1) Current system resolvers (in /etc/resolv.conf)"
-	echo "   2) FDN (France)"
-	echo "   3) DNS.WATCH (Germany)"
-	echo "   4) OpenDNS (Anycast: worldwide)"
-	echo "   5) Google (Anycast: worldwide)"
-	echo "   6) Yandex Basic (Russia)"
+	echo "Ποιους DNS θα ήθελες να χρησιμοποιείς με το VPN σου ?"
+	echo "   1) Του συστήματος (στο /etc/resolv.conf)"
+	echo "   2) FDN (Γαλλία)"
+	echo "   3) DNS.WATCH (Γερμανία)"
+	echo "   4) OpenDNS (Anycast: παγκόσμιο)"
+	echo "   5) Google (Anycast: παγκόσμιο)"
+	echo "   6) Yandex Basic (Ρωσία)"
 	while [[ $DNS != "1" && $DNS != "2" && $DNS != "3" && $DNS != "4" && $DNS != "5" && $DNS != "6" ]]; do
 		read -p "DNS [1-6]: " -e -i 1 DNS
 	done
 	echo ""
-	echo "See https://github.com/Angristan/OpenVPN-install#encryption to learn more about "
-	echo "the encryption in OpenVPN and the choices I made in this script."
-	echo "Please note that all the choices proposed are secure (to a different degree)"
-	echo "and are still viable to date, unlike some default OpenVPN options"
+	echo "Δείτε στο https://github.com/CerebruxCode/OpenVPN-install#encryption για να μάθετε "
+	echo "περισσότερα για την κρυπτογράφηση του OpenVPN και τις επιλογές που έκανα για το script."
+	echo "Παρακαλώ σημειώστε ότι όλες οι επιλογές που προτείνονται είναι ασφαλείς (σε διαφορετικό βαθμό)"
+	echo "και είναι επίκαιρα, σε αντίθεση με τα προεπιλεγμένα του OpenVPN"
 	echo ''
-	echo "Choose which cipher you want to use for the data channel:"
-	echo "   1) AES-128-CBC (fastest and sufficiently secure for everyone, recommended)"
+	echo "Επιλέξτε τον κρυπτογράφο που θέλετε να χρησιμοποιήσετε για το κανάλι δεδομένων:"
+	echo "   1) AES-128-CBC (Ταχύτερο και επαρκώς ασφαλής για όλους, συνιστάται)"
 	echo "   2) AES-192-CBC"
 	echo "   3) AES-256-CBC"
-	echo "Alternatives to AES, use them only if you know what you're doing."
-	echo "They are relatively slower but as secure as AES."
+	echo "Εναλλακτικά με το AES, χρησιμοποιήστε τα μόνο αν γνωρίζετε τι κάνετε."
+	echo "Είναι σχετικά πιο αργά αλλά και ασφαλή όπως το AES."
 	echo "   4) CAMELLIA-128-CBC"
 	echo "   5) CAMELLIA-192-CBC"
 	echo "   6) CAMELLIA-256-CBC"
@@ -269,10 +269,10 @@ else
 		;;
 	esac
 	echo ""
-	echo "Choose what size of Diffie-Hellman key you want to use:"
-	echo "   1) 2048 bits (fastest)"
-	echo "   2) 3072 bits (recommended, best compromise)"
-	echo "   3) 4096 bits (most secure)"
+	echo "Επιλέξτε το μέγεθος του κλειδιού Diffie-Hellman που θέλετε να χρησιμοποιήσετε:"
+	echo "   1) 2048 bits (ταχύτερο)"
+	echo "   2) 3072 bits (συνιστάται, καλύτερος συμβιβασμός)"
+	echo "   3) 4096 bits (ο πιο ασφαλής αλλά αργός)"
 	while [[ $DH_KEY_SIZE != "1" && $DH_KEY_SIZE != "2" && $DH_KEY_SIZE != "3" ]]; do
 		read -p "DH key size [1-3]: " -e -i 2 DH_KEY_SIZE
 	done
@@ -288,10 +288,10 @@ else
 		;;
 	esac
 	echo ""
-	echo "Choose what size of RSA key you want to use:"
-	echo "   1) 2048 bits (fastest)"
-	echo "   2) 3072 bits (recommended, best compromise)"
-	echo "   3) 4096 bits (most secure)"
+	echo "Επιλέξτε το μέγεθος του κλειδιού RSA που θέλετε να χρησιμοποιήσετε:"
+	echo "   1) 2048 bits (ταχύτερο)"
+	echo "   2) 3072 bits (συνιστάται, καλύτερος συμβιβασμός)"
+	echo "   3) 4096 bits (ο πιο ασφαλής)"
 	while [[ $RSA_KEY_SIZE != "1" && $RSA_KEY_SIZE != "2" && $RSA_KEY_SIZE != "3" ]]; do
 		read -p "DH key size [1-3]: " -e -i 2 RSA_KEY_SIZE
 	done
@@ -307,13 +307,13 @@ else
 		;;
 	esac
 	echo ""
-	echo "Finally, tell me a name for the client certificate and configuration"
+	echo "Τέλος, πείτε μου ένα όνομα για το πιστοποιητικό χρήστη/συσκευή και τη διαμόρφωση"
 	while [[ $CLIENT = "" ]]; do
-		echo "Please, use one word only, no special characters"
+		echo "Παρακαλώ, χρησιμοποιήστε ΜΟΝΟ μία αλφαρηθμιτική λέξη, χωρίς ειδικούς χαρακτήρες"
 		read -p "Client name: " -e -i client CLIENT
 	done
 	echo ""
-	echo "Okay, that was all I needed. We are ready to setup your OpenVPN server now"
+	echo "Εντάξει, αυτά ήταν τα μόνα που χρειαζόμουν. Είμαστε έτοιμοι να ρυθμίσουμε το διακομιστή OpenVPN σας"
 	read -n1 -r -p "Press any key to continue..."
 
 	if [[ "$OS" = 'debian' ]]; then
@@ -353,10 +353,10 @@ else
 		# Else, the distro is ArchLinux
 		echo ""
 		echo ""
-		echo "As you're using ArchLinux, I need to update the packages on your system to install those I need."
-		echo "Not doing that could cause problems between dependencies, or missing files in repositories."
+		echo "Καθώς χρησιμοποιείτε το ArchLinux, πρέπει να ενημερώσω τα πακέτα στο σύστημά σας για να εγκαταστήσω αυτά που χρειάζομαι."
+		echo "Εάν δεν το κάνετε αυτό θα μπορούσε να προκαλέσει προβλήματα μεταξύ εξαρτήσεων ή ελλείποντα αρχεία σε αποθετήρια."
 		echo ""
-		echo "Continuing will update your installed packages and install needed ones."
+		echo "Η συνέχιση θα ενημερώσει τα εγκατεστημένα πακέτα σας και θα εγκαταστήσει τα απαραίτητα."
 		while [[ $CONTINUE != "y" && $CONTINUE != "n" ]]; do
 			read -p "Continue ? [y/n]: " -e -i y CONTINUE
 		done
@@ -596,11 +596,11 @@ verb 3" >> /etc/openvpn/server.conf
 	EXTERNALIP=$(wget -qO- ipv4.icanhazip.com)
 	if [[ "$IP" != "$EXTERNALIP" ]]; then
 		echo ""
-		echo "Looks like your server is behind a NAT!"
+		echo "Φαίνεται ότι ο διακομιστής σας βρίσκεται πίσω από NAT!"
 		echo ""
-                echo "If your server is NATed (e.g. LowEndSpirit, Scaleway, or behind a router),"
-                echo "then I need to know the address that can be used to access it from outside."
-                echo "If that's not the case, just ignore this and leave the next field blank"
+                echo "Εάν ο διακομιστής σας έχει NAT (π.χ. LowEndSpirit, Scaleway ή πίσω από δρομολογητή),"
+                echo "Τότε πρέπει να γνωρίζω τη διεύθυνση που μπορεί να χρησιμοποιηθεί για την πρόσβαση από έξω."
+                echo "Εάν δεν συμβαίνει αυτό, απλά αγνοήστε αυτό και αφήστε το επόμενο πεδίο κενό"
                 read -p "External IP or domain name: " -e USEREXTERNALIP
 		if [[ "$USEREXTERNALIP" != "" ]]; then
 			IP=$USEREXTERNALIP
@@ -631,9 +631,9 @@ verb 3" >> /etc/openvpn/client-template.txt
 	# Generate the custom client.ovpn
 	newclient "$CLIENT"
 	echo ""
-	echo "Finished!"
+	echo "Τελειώσαμε !"
 	echo ""
-	echo "Your client config is available at $homeDir/$CLIENT.ovpn"
-	echo "If you want to add more clients, you simply need to run this script another time!"
+	echo "Η διαμόρφωση του χρήστη/συσκευή σας είναι διαθέσιμη στο $homeDir/$CLIENT.ovpn"
+	echo "Εάν θέλετε να προσθέσετε περισσότερους χρήστες/συσκευές, απλά πρέπει να εκτελέσετε αυτό τον εγκαταστάστη ξανά!"
 fi
 exit 0;
